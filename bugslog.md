@@ -1,0 +1,12 @@
+## BUG LOG FOR WARBLER APP by Michael Ellis
+
+1. *Fixed Seed File application Context* Seed.py as provided does not establish flask application context which is required when using db commands such as  `db.drop_all()`,`db.create_all()`, and `db.session.commit()`. Therefore, as is, the seed file cannot be run! This bug is fixed by running db commands within application context using a `with app.app_context():` block of code when using commands such as `db.drop_all()`,`db.create_all()`, and `db.session.commit`. Added these corrections to the seed file.
+
+2. *Fixed the deprecated use of `datetime.utcnow()` to the currrent `datetime.now()` within the Message model in models.py in column timestamp*.
+
+3. *fixed lack of the python package `email_validator` that is required by WTForms to do email validations* this package seems to be lacking from the requirements file which prevents the signup portion of the site from working. Easily fixed by pip installing said package via bash/terminal `pip install email_validator` within the virtual environment!
+   
+4. *fixed broken link in `users/edit.html`. The offending link is the cancel button near the `edit this user button`* The issue was that for the anchor tag `<a href="/users/{{ user.id }}" class="btn btn-outline-secondary">Cancel</a>` there was no user query/object passed to the html/jinja. Therefore `/users/{{user.id}}` is directing to `/users/` since there is no user object for the template to reference which results in a 404 error. Therefore, one needs to either query for the user and pass it to jinja, or since we have `@app.before_request` decorator that will add the user to flask's g, we could fix by making  `/users/{{user.id}}` ---> `/users/{{g.user.id}}`. A third possible correction, which is effectively the same as taking the user key from `g.user`, is just going to the session directly to grab the user id since `g.user` is set based upon the `do_login()` function setting the session to the logged in user's id via `session[CURR_USER_KEY] = user.id`. Therefore, we could implement the same fix via  `/users/{{user.id}}` ---> `/users/{{session[CURR_USER_KEY]}}`. I fixed by setting the flask g variable aka  `/users/{{user.id}}` ---> `/users/{{g.user.id}}`.
+   
+
+   
