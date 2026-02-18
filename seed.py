@@ -5,7 +5,7 @@ from app import db, app
 from models import User, Message, Follows
 
 
-# moved all of Springboard's code below into a with application context. None of this db seed code works without flaks app context. 
+# moved all of Springboard's code below into a with application context. None of this db code will work without flask app context. 
 with app.app_context():
     db.drop_all()
     db.create_all()

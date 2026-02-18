@@ -515,6 +515,14 @@ p.card-bio {
   z-index: 1;
 }
 
+#messages-form-message-show {
+  position: absolute;
+  top: 130px;
+  right: 250px;
+  z-index: 1;
+}
+
+
 .single-message {
   font-size: 27px;
   line-height: 32px;

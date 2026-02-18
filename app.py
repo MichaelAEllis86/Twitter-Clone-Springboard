@@ -63,6 +63,8 @@ def do_login(user):
 
     session[CURR_USER_KEY] = user.id
 
+    
+
 
 def do_logout():
     """Logout user."""

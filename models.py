@@ -49,19 +49,22 @@ class Likes(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')# possibly fix and move delete behavior into db.relationship
+        db.ForeignKey('users.id', ondelete='cascade'),# possibly fix and move delete behavior into db.relationship
+        nullable=False
     )
 
     message_id = db.Column(
         db.Integer,
         db.ForeignKey('messages.id', ondelete='cascade'),# possibly fix and move delete behavior into db.relationship
-        unique=True
+        nullable=False
     )
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'message_id'),)
 
     def __repr__(self):
         l=self
-        return f"<like id={l.id} user_id={l.user_id} message_id={l.message_id}"
-
+        return f"<like id={l.id} user_id={l.user_id} message_id={l.message_id}>"
+    
 
 class User(db.Model):
     """User in the system. One User can post many Warbles"""
@@ -109,7 +112,13 @@ class User(db.Model):
     )
 
     # messages = db.relationship('Message', backref="user", cascade="all, delete-orphan")
-    messages = db.relationship('Message')
+    messages = db.relationship(
+        'Message',
+        back_populates='user',
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
+    # messages = db.relationship('Message')
 
     followers = db.relationship(
         "User",
@@ -226,7 +235,7 @@ class Message(db.Model):
         nullable=False,
     )
 
-    user = db.relationship('User')
+    user = db.relationship('User', back_populates='messages')
 
 
 
